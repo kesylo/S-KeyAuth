@@ -1,0 +1,34 @@
+# Create pwd file
+    f = open('passwords.txt', 'a')
+    # get the random pwd
+    rand_pwd = gen_random_pwd()
+    # create all other pwd from the rand pwd
+    for x in range(0, 99):
+        hashed_pwd = hash_pwd(rand_pwd)
+        # store to file
+        f.write(hashed_pwd)
+        rand_pwd = hashed_pwd
+
+    # Close the file
+    f.close()
+
+
+
+l'user:
+    il garde de p1 a P99
+    a la first connection il donne P99 au serveur.
+    celui ci le hash et trouve p100. alors il laisse l'user se connecter
+    le serveur ecrase p100 quil avait et stocke p99 maintenant
+    Le client desormais doit se connecter avec p98
+
+script 1: init skey
+    create pwd dans fichier
+    stocke le 100eme dans le serveur
+
+
+script 2: auth skey
+    il prend p100 dans sa pd et le garde en variable
+    what is the pwd ? 
+    on tappe p99 il le hash, et compare le result a p100
+    et il dit vous etes connecté
+    puis retire P100 et remplace par p99
