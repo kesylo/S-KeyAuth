@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import hashlib
+import hashlib,os,sys
 
 
 server_database = "server_database.txt"
@@ -36,30 +36,35 @@ def lines_count(file):
 
 
 def del_last_line(file):
-    line = lines_count(file)
-    with open(file, 'r+') as f:
-        f.readline()
-        data = f.read()
-        f.seek(line -1)
-        f.write(data)
-        f.truncate()
-        f.close()
+    file = open(file, "r+", encoding = "utf-8")
+    file.seek(0, os.SEEK_END)
+    pos = file.tell() - 1
+    while pos > 0 and file.read(1) != "\n":
+        pos -= 1
+        file.seek(pos, os.SEEK_SET)
+    if pos > 0:
+        file.seek(pos, os.SEEK_SET)
+        file.truncate()
+    file.close()
     
 
 
 def main():
     print("------------------------ Welcome to the S/Key server------------------------\n")
-    usr_pwd = input("Please enter your password to connect to the server: ")
-    if (check_if_correct_pwd(usr_pwd)):
-        print ("You are connected\n")
-        # Overwrite server pwd
-        f = open(server_database, 'w')
-        f.write(usr_pwd)
-        f.close()
-        # Delete current pwd from client list
-        del_last_line(client_pwd_list)
-    else:
-        print("Connection failed. Please check your password\n")
+    isconnected = True
+    while (isconnected):
+        usr_pwd = input("Please enter your password to connect to the server: ")
+        if (check_if_correct_pwd(usr_pwd)):
+            print ("You are connected\n")
+            # Overwrite server pwd
+            f = open(server_database, 'w')
+            f.write(usr_pwd)
+            f.close()
+            # Delete current pwd from client list
+            del_last_line(client_pwd_list)
+            isconnected = False
+        else:
+            print("Connection failed. Please check your password\n")
 
 
 if __name__ == "__main__":
